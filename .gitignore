@@ -1,2 +1,6 @@
 .ipynb_checkpoints/
+
+module/__pycache__/*
 .idea/
+tests.py
+result/
