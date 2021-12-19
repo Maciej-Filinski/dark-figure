@@ -41,9 +41,9 @@ class DarkFigure:
         daily_regional_deaths[daily_regional_deaths < 0] = 0
 
         weekly_regional_deaths = daily_regional_deaths.copy()
-        weekly_regional_deaths.columns = [epiweeks.Week.fromdate(datetime.date(year=int(c[:4]),
-                                                                               month=int(c[5:7]),
-                                                                               day=int(c[8:10]))).isoformat()
+        weekly_regional_deaths.columns = [epiweeks.Week.fromdate(datetime.date(year=int(str(c)[:4]),
+                                                                               month=int(str(c)[5:7]),
+                                                                               day=int(str(c)[8:10]))).isoformat()
                                           for c in daily_regional_deaths.columns]
         t = weekly_regional_deaths.transpose()
         weekly_regional_deaths = t.groupby(t.index).sum().transpose()
@@ -56,9 +56,9 @@ class DarkFigure:
         daily_regional_cases[daily_regional_cases < 0] = 0
 
         weekly_regional_cases = daily_regional_cases.copy()
-        weekly_regional_cases.columns = [epiweeks.Week.fromdate(datetime.date(year=int(c[:4]),
-                                                                              month=int(c[5:7]),
-                                                                              day=int(c[8: 10]))).isoformat()
+        weekly_regional_cases.columns = [epiweeks.Week.fromdate(datetime.date(year=int(str(c)[:4]),
+                                                                              month=int(str(c)[5:7]),
+                                                                              day=int(str(c)[8: 10]))).isoformat()
                                          for c in daily_regional_cases.columns]
         t = weekly_regional_cases.transpose()
         weekly_regional_covid_cases = t.groupby(t.index).sum().transpose()
