@@ -19,6 +19,8 @@ class DarkFigure:
     def __call__(self, all_regions: list, ifr, ratios=None):
         self.all_regions = all_regions
         for region in all_regions:
+            if region != 'Free State of Saxony':
+                continue
             self.result_dir = f'./result/{str(datetime.datetime.now().date())}/{all_regions[0]}/{region}/'
             if not os.path.exists(self.result_dir):
                 os.makedirs(self.result_dir)
@@ -33,18 +35,22 @@ class DarkFigure:
             corrected_covid_deaths = self._calculate_overall_covid_deaths_with_unreported_deaths(
                 region, overall_minus_max, weekly_regional_covid_deaths)
             print(region)
-            self._interpolate_timeline_to_days(corrected_covid_deaths, daily_regional_deaths, ifr, ratios)
+            return overall_minus_max, weekly_regional_covid_deaths
+            # self._interpolate_timeline_to_days(corrected_covid_deaths, daily_regional_deaths, ifr, ratios)
 
     def _prepare_weekly_covid_deaths(self, region: str):
         daily_regional_deaths = self.deaths[self.deaths['location_name'] == region].reset_index(drop=True)
         daily_regional_deaths = daily_regional_deaths.pivot(values='value', index='Age group', columns='date').fillna(0)
         daily_regional_deaths[daily_regional_deaths < 0] = 0
 
+
         weekly_regional_deaths = daily_regional_deaths.copy()
         weekly_regional_deaths.columns = [epiweeks.Week.fromdate(datetime.date(year=int(str(c)[:4]),
                                                                                month=int(str(c)[5:7]),
                                                                                day=int(str(c)[8:10]))).isoformat()
                                           for c in daily_regional_deaths.columns]
+
+        weekly_regional_deaths.drop(columns=['2022W01', '2022W02', '2022W03'], inplace=True)
         t = weekly_regional_deaths.transpose()
         weekly_regional_deaths = t.groupby(t.index).sum().transpose()
         return daily_regional_deaths, weekly_regional_deaths
