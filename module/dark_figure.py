@@ -25,16 +25,26 @@ class DarkFigure:
             if not os.path.exists(self.result_dir):
                 os.makedirs(self.result_dir)
             daily_regional_deaths, weekly_regional_covid_deaths = self._prepare_weekly_covid_deaths(region)
+
             weekly_regional_covid_cases = self._prepare_weekly_covid_cases(region)
+
             max_deaths = self._prepare_regional_deaths(region)
+            print('first max_deaths', max_deaths)
             correction_due_to_aging = self._calculate_correction_due_to_aging(region, max_deaths)
             max_deaths = self._calculate_reference_max_deaths(region, correction_due_to_aging)
             overall_deaths = self._calculate_overall_covid_deaths(region)
 
             overall_minus_max = np.maximum(0, overall_deaths - max_deaths)
-            corrected_covid_deaths = self._calculate_overall_covid_deaths_with_unreported_deaths(
-                region, overall_minus_max, weekly_regional_covid_deaths)
-            print(region)
+            # corrected_covid_deaths = self._calculate_overall_covid_deaths_with_unreported_deaths(
+            #     region, overall_minus_max, weekly_regional_covid_deaths)
+            print('daily_regional_deaths', daily_regional_deaths)
+            print('weekly_regional_covid_deaths',weekly_regional_covid_deaths)
+            print('weekly_regional_covid_cases',weekly_regional_covid_cases)
+            print('max_deaths',max_deaths)
+            print('correction_due_to_aging',correction_due_to_aging)
+            print('overall_deaths',overall_deaths)
+            print('overall_minus_max+',overall_minus_max)
+            # print(corrected_covid_deaths)
             return overall_minus_max, weekly_regional_covid_deaths
             # self._interpolate_timeline_to_days(corrected_covid_deaths, daily_regional_deaths, ifr, ratios)
 
